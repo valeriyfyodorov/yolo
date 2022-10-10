@@ -1,0 +1,8 @@
+OIDv4_Toolkit/
+preps/frames/
+Dataset/Raven/
+OIDv4_Toolkit/*
+preps/frames/*
+Dataset/Raven/*
+preps/*zip
+.DS_Store

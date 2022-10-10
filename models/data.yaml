@@ -1,0 +1,5 @@
+names:
+- object01
+nc: 1
+train: /content/datasets/test002-1/train/images
+val: /content/datasets/test002-1/valid/images
