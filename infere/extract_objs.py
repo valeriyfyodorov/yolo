@@ -112,7 +112,8 @@ def post_process_and_save(input_image, outputs, file_name_no_ex="01", extn=".jpg
                                cropped_left:cropped_right]
         if crop_img.shape[0] > 5 and crop_img.shape[1] > 20:
             save_cropped_image(crop_img, file_name_no_ex + f"{idx:02d}" + extn)
-    return crop_img
+            return crop_img
+    return input_image
 
 
 def post_process(input_image, outputs):

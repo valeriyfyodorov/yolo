@@ -39,13 +39,14 @@ def processText(txt):
 def extract_paddle(ocr, image, file):
     # img_path = './imgs_en/img_12.jpg'
     result = ocr.ocr(image, cls=True)
+    res = ""
     for box in result:
         if len(box) > 0:
             if len(box[0]) > 1:
                 txt, conf = box[0][1]
                 # print(txt, conf)
                 res = processText(txt)
-                print(res, res == file[:8], file)
+    print(res, res == file[:8], file)
 
 
 def extract_tesser(image, file):
