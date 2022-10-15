@@ -1,4 +1,13 @@
 # import keras_ocr
+# pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
+# pip install "paddleocr>=2.0.1"
+# if errors in opencv loop
+# pip uninstall opencv-python
+# pip uninstall opencv-contrib-python
+# pip uninstall opencv-contrib-python-headless
+# pip3 install opencv-contrib-python==4.5.5.62
+from paddleocr import PaddleOCR
+
 import pytesseract
 import cv2
 import easyocr
@@ -25,6 +34,18 @@ def processText(txt):
     if len(txt) > 8:
         txt = txt[:8]
     return txt
+
+
+def extract_paddle(ocr, image, file):
+    # img_path = './imgs_en/img_12.jpg'
+    result = ocr.ocr(image, cls=True)
+    for box in result:
+        if len(box) > 0:
+            if len(box[0]) > 1:
+                txt, conf = box[0][1]
+                # print(txt, conf)
+                res = processText(txt)
+                print(res, res == file[:8], file)
 
 
 def extract_tesser(image, file):
@@ -103,7 +124,14 @@ def jpgsIntoList(dir_path):
 
 def run_tests(file_names):
     reader = easyocr.Reader(['en'])
+    ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=False, show_log=False)
     start = time.time()
+    print("Looping paddle")
+    start = time.time()
+    for file in file_names:
+        image = cv2.imread(file)
+        extract_paddle(ocr, processImage(image), file)
+    print("[INFO] Paddle took {:.6f} seconds".format(time.time() - start))
     print("Looping tesser")
     start = time.time()
     for file in file_names:

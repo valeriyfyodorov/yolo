@@ -6,7 +6,9 @@ import time
 import os
 import numpy as np
 
+# confidence below which do not process images
 EASY_MIN_CONFIDENCE_LEVEL = 0.55
+SMALLER_PLATE_WIDTH_OK_FOR_EASY = 70
 
 
 def processText(txt):
@@ -16,6 +18,18 @@ def processText(txt):
     if len(txt) > 8:
         txt = txt[:8]
     return txt
+
+
+def extract_paddle(pocr, image):
+    conf = 0
+    res = ""
+    boxes = pocr.ocr(image, cls=True)
+    for box in boxes:
+        if len(box) > 0:
+            if len(box[0]) > 1:
+                res, conf = box[0][1]
+                res = processText(res)
+    return res, conf
 
 
 def extract_tesser(image):
@@ -31,6 +45,7 @@ def extract_easy(reader, image):
         res = processText(box[0][1])
         if len(box[0]) > 2:
             conf = box[0][2]
+    conf = conf
     return res, conf
 
 
@@ -70,26 +85,27 @@ def run_tests(file_names):
     print("[INFO] Easy took {:.6f} seconds".format(time.time() - start))
 
 
-def extract_result(image, reader):
+def extract_result(image, reader, pocr):
     width = image.shape[1]
-    if image.shape[0] < 10 or width < 20:
+    # print(width) #DEBUG
+    if image.shape[0] < 5 or width < 30:
         return "", 0
     tesser_confid = 0.4
-    if width < 100:
+    if width < SMALLER_PLATE_WIDTH_OK_FOR_EASY:
         tesser_confid = 0.3
-    # print(width)
-    if width > 150:
-        result, confid = extract_easy(reader, processImage(image, resize=True))
+    if width > SMALLER_PLATE_WIDTH_OK_FOR_EASY:
+        result, confid = extract_paddle(pocr, image)
+        # result, confid = extract_easy(reader, processImage(image, resize=True))
+        # print(result, confid, "easy") #DEBUG
     else:
         result, confid = "", 0.2
-    # print(result, confid)
     # try tesser where easy confidence is low
-    if confid < EASY_MIN_CONFIDENCE_LEVEL or len(result) < 8:
-        text_tesser = extract_tesser(processImage(image))
-        if len(text_tesser) >= 8:
-            result = text_tesser
-            confid = tesser_confid
-            # print(result, confid, "----tesser---")
+    # if confid < EASY_MIN_CONFIDENCE_LEVEL or len(result) < 8:
+    #     text_tesser = extract_tesser(processImage(image))
+    #     if len(text_tesser) >= 8:
+    #         result = text_tesser
+    #         confid = tesser_confid
+    #         print(result, confid, "----tesser!---") #DEBUG
     if len(result) < 8:
         result = ""
     return result, confid
