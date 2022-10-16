@@ -68,7 +68,7 @@ def extract_easy(reader, image, file):
 
 
 # +-128 for brightness, +-64 for contrast
-def apply_brightness_contrast(img, brightness=-80, contrast=90):
+def apply_brightness_contrast(img, brightness=-80, contrast=80):
     input_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     if cv2.mean(input_img)[0] < 128:
         return img
@@ -218,6 +218,7 @@ def run_save_correction_tests(file_names, brightness, contrast):
 
 if __name__ == '__main__':
     file_names = jpgsIntoList('.')
+    # displayApplyBrigtnessContrast("95534483_l.jpg", -85, 85)
     # run_save_correction_tests(file_names, -64, 96)
     # testSaveImageApplyBrigtnessContrast("95534483_l.jpg")
     # testDisplaySharpenedImage("95534483_l.jpg")
