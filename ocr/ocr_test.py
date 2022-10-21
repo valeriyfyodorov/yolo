@@ -7,10 +7,6 @@
 # pip uninstall opencv-contrib-python-headless
 # pip3 install opencv-contrib-python==4.5.5.62
 from paddleocr import PaddleOCR
-from scipy.signal import fftconvolve
-from skimage import color, data, restoration
-from skimage.util import img_as_float
-from scipy.signal import convolve2d
 import pytesseract
 import cv2
 import easyocr
@@ -93,6 +89,7 @@ def apply_brightness_contrast(img, brightness=-80, contrast=80):
     return apply_filter(buf)
 
 
+# sharpening filter
 def apply_filter(image):
     kernel2d = np.array([[0, 0,  0],
                          [-1,  4, -1],
@@ -217,40 +214,6 @@ def run_save_correction_tests(file_names, brightness, contrast):
         testSaveImageApplyBrigtnessContrast(file, brightness, contrast)
 
 
-def calcPSF(roi, len, theta):
-    # h = cv2.Mat(filterSize, cv2.CV_32F)
-    filterSize = * roi, 1
-    print(filterSize)
-    h = np.zeros(filterSize, dtype="float32")
-    # center_coordinates
-    point = (int(filterSize[1] / 2), int(filterSize[0] / 2))
-    ellipse = cv2.ellipse(h, point, (0, round(float(len) / 2.0)),
-                          90.0 - theta, 0, 360, float(255), cv2.FILLED)
-    # print(ellipse)
-    # for BGR use following
-    # ellipse = cv2.ellipse(h, point, (0, round(float(len) / 2.0)),
-    #                       90.0 - theta, 0, 360, (255,255,255), cv2.FILLED)
-    print(np.sum(ellipse[:, :, 0]))
-    outputImg = ellipse / np.sum(ellipse[:, :, 0])
-    # print(outputImg)
-    # cv2.imshow("outputImg", outputImg)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    return outputImg
-
-
-def deblur_motion(img, len, theta):
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    roi = (math.floor(img.shape[0] / 2) * 2, math.floor(img.shape[1] / 2) * 2)
-    h = calcPSF(roi, len, theta)
-    # print(h)
-    return img
-
-
-def deblur_motion_from_file(file_name, len, theta):
-    return deblur_motion(cv2.imread(file_name), len, theta)
-
-
 if __name__ == '__main__':
     file_names = jpgsIntoList('.')
     # displayApplyBrigtnessContrast("95534483_l.jpg", -85, 85)
@@ -258,5 +221,5 @@ if __name__ == '__main__':
     # testSaveImageApplyBrigtnessContrast("95534483_l.jpg")
     # testDisplaySharpenedImage("95534483_l.jpg")
     # calcPSF((8, 8), 4, 70)
-    deblur_motion_from_file("car.jpg", 128, 0)
-    # run_tests(file_names)
+    # deblur_motion_from_file("car.jpg", 128, 0, 700)
+    run_tests(file_names)
