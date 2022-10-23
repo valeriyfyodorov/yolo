@@ -5,6 +5,7 @@
 # instal CUDA before continue
 VER=4.6.0
 PYTHON_VERSION=3.9.15
+PYTHON_LIB=libpython3.9.a
 CUDA_VERSION=11.8
 CORES=2
 # /home/railcar/.pyenv/versions/rcars
@@ -69,7 +70,19 @@ cd build
 echo "Compiling OpenCV $VER... this will take several minutes..."
 rm CMakeCache.txt
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
-	-D CMAKE_INSTALL_PREFIX=/usr/local \
+	-D BUILD_NEW_PYTHON_SUPPORT=ON \
+	-D BUILD_opencv_python3=ON \
+	-D BUILD_opencv_legacy=OFF \
+	-D CMAKE_INSTALL_PREFIX=$HOME/.pyenv/versions/${PYTHON_VERSION}/usr/local/ \
+	-D PYTHON_EXECUTABLE=$HOME/.pyenv/versions/${PYTHON_VERSION}/bin/python \
+	-D PYTHON_LIBRARY=$HOME/.pyenv/versions/${PYTHON_VERSION}/lib/${PYTHON_LIB} \
+	-D PYTHON_INCLUDE_DIR=$HOME/.pyenv/versions/${PYTHON_VERSION}/include/python3.9 \
+	-D PYTHON_INCLUDE_DIRS=$HOME/.pyenv/versions/${PYTHON_VERSION}/include/python3.9 \
+	-D PYTHON_INCLUDE_DIRS2=$HOME/.pyenv/versions/${PYTHON_VERSION}/include/python3.9 \
+	-D INCLUDE_DIRS=$HOME/.pyenv/versions/${PYTHON_VERSION}/include/python3.9 \
+	-D INCLUDE_DIRS2=$HOME/.pyenv/versions/${PYTHON_VERSION}/include/python3.9 \
+	-D PYTHON_PACKAGES_PATH=$HOME/.pyenv/versions/${PYTHON_VERSION}/lib/python3.9/site-packages \
+	-D PYTHON_NUMPY_INCLUDE_DIR=$HOME/.pyenv/versions/${PYTHON_VERSION}/lib/python3.9/site-packages/numpy/core/include \
 	-D INSTALL_PYTHON_EXAMPLES=OFF \
 	-D WITH_TBB=ON \
 	-D OPENCV_ENABLE_NONFREE=ON \
@@ -100,21 +113,21 @@ echo "Installation complete"
 
 
 echo "Create symlinks"
-ls /usr/local/lib/python3.10/site-packages/cv2/python-3.9/
+ls /usr/local/lib/python3.9/site-packages/cv2/python-3.9/
 ls $PREFIX_MAIN/lib/python3.9/site-packages/cv2/python-3.9/
 
 echo "CMake sure so file for cv2 is present in any of those locations. Then uncomment in part 2 the right one and complete tests"
 
-# cd ~/pyenvs/opencv_cuda/lib/python3.10/site-packages/
-# ln -s /usr/local/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so cv2.so
-# cd ${PREFIX}/lib/python3.9/site-packages/
-# ln -s /usr/local/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so cv2.so
 
 
 # echo "Check that it works. Quit with quit()"
 # python
 # import cv2
 # cv2.__version__
+
+
+	# -D CMAKE_INSTALL_PREFIX=/usr/local \
+
 
 # cmake -D CMAKE_BUILD_TYPE=RELEASE \
 # 	-D CMAKE_INSTALL_PREFIX=/usr/local \
@@ -151,3 +164,23 @@ echo "CMake sure so file for cv2 is present in any of those locations. Then unco
 # 	-D ENABLE_PRECOMPILED_HEADERS=YES \
 # 	-D EIGEN_INCLUDE_PATH=/usr/include/eigen3 \
 # 	-D BUILD_EXAMPLES=ON ..
+
+
+
+# -D CMAKE_INSTALL_PREFIX=~/.pyenv/versions/${PYTHON_VERSION}/usr/local/ \
+# -D INSTALL_C_EXAMPLES=OFF \
+# -D BUILD_NEW_PYTHON_SUPPORT=ON \
+# -D BUILD_opencv_python3=ON \
+# -D BUILD_opencv_legacy=OFF \
+# -D INSTALL_PYTHON_EXAMPLES=ON \
+# -D OPENCV_EXTRA_MODULES_PATH=~/tmp/opencv_contrib/modules \
+# -D BUILD_EXAMPLES=ON \
+# -D PYTHON_EXECUTABLE=~/.pyenv/versions/${PYTHON_VERSION}/bin/python \
+# -D PYTHON_LIBRARY=~/.pyenv/versions/${PYTHON_VERSION}/lib/${PYTHON_LIB} \
+# -D PYTHON_INCLUDE_DIR=~/.pyenv/versions/${PYTHON_VERSION}/include/python3.5m \
+# -D PYTHON_INCLUDE_DIRS=~/.pyenv/versions/${PYTHON_VERSION}/include/python3.5m \
+# -D PYTHON_INCLUDE_DIRS2=~/.pyenv/versions/${PYTHON_VERSION}/include/python3.5m \
+# -D INCLUDE_DIRS=~/.pyenv/versions/${PYTHON_VERSION}/include/python3.5m \
+# -D INCLUDE_DIRS2=~/.pyenv/versions/${PYTHON_VERSION}/include/python3.5m \
+# -D PYTHON_PACKAGES_PATH=~/.pyenv/versions/${PYTHON_VERSION}/lib/python3.5/site-packages \
+# -D PYTHON_NUMPY_INCLUDE_DIR=~/.pyenv/versions/${PYTHON_VERSION}/lib/python3.5/site-packages/numpy/core/include
