@@ -7,13 +7,12 @@ VER=4.6.0
 PYTHON_VERSION=3.9.15
 CUDA_VERSION=11.8
 CORES=2
+# /home/railcar/.pyenv/versions/rcars
 PREFIX=`pyenv prefix`
+# /home/railcar/.pyenv/versions/3.9.15
 PREFIX_MAIN=`pyenv virtualenv-prefix`
 # for grtx1070 ARCH_BIN is 6.1 for others check nvidia site
 ARCH_BIN=6.1
-# CUDNN_VERSION_LEFT=ubuntu2204
-CUDNN_VERSION_RIGHT=8.6.0.163
-KEYRING_VERSION=1.0-1
 # https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html#ubuntu-installation-network
 cd ~/Downloads
 pip install -U numpy
@@ -54,7 +53,7 @@ echo "To install ceres solver manually uncomment lines in script"
 # sudo make install
 
 echo "Fetching and unpacking OpenCV $VER..."
-mkdir -p $HOME/repositories
+mkdir -p $HOME/Downloads/repositories
 cd $HOME/Downloads/repositories
 wget -O opencv.zip https://github.com/opencv/opencv/archive/${VER}.zip
 wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/${VER}.zip
@@ -66,10 +65,9 @@ cd opencv-${VER}
 mkdir -p build
 cd build
 
+# hostname=$(sudo cat /etc/hostname)
 echo "Compiling OpenCV $VER... this will take several minutes..."
 rm CMakeCache.txt
-hostname=$(sudo cat /etc/hostname)
-
 cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D CMAKE_INSTALL_PREFIX=/usr/local \
 	-D INSTALL_PYTHON_EXAMPLES=OFF \
@@ -85,7 +83,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
 	-D WITH_OPENGL=ON \
 	-D WITH_QT=ON \
 	-D OpenGL_GL_PREFERENCE=LEGACY \
-	-D OPENCV_EXTRA_MODULES_PATH=$HOME/Downloads/opencv_contrib-${VER}/modules \
+	-D OPENCV_EXTRA_MODULES_PATH=$HOME/Downloads/repositories/opencv_contrib-${VER}/modules \
 	-D PYTHON_DEFAULT_EXECUTABLE=$(which python3) \
 	-D BUILD_EXAMPLES=ON ..
 
