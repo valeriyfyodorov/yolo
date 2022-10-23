@@ -60,6 +60,10 @@ def pre_process(input_image, net):
 
 
 def save_cropped_image(crop_img, file_name):
+    cv2.imshow('Output', crop_img)
+    # make frames dic first makedir frames
+    # print(file_name)
+    cv2.waitKey(2000)
     cv2.imwrite(file_name, crop_img)
 
 
@@ -70,7 +74,7 @@ def post_process_and_save(input_image, outputs, file_name_no_ex="01", extn=".jpg
     boxes = []
     # Rows.
     rows = outputs[0].shape[1]
-    print(f"Rows found: {rows}")
+    # print(f"Rows found: {rows}")
     image_height, image_width = input_image.shape[:2]
     # Resizing factor.
     x_factor = image_width / INPUT_WIDTH
