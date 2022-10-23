@@ -6,6 +6,8 @@
 # pip uninstall opencv-contrib-python
 # pip uninstall opencv-contrib-python-headless
 # pip3 install opencv-contrib-python==4.5.5.62
+# for no avx machines
+# python3 -m pip install paddlepaddle-gpu==2.3.2 -f https://paddlepaddle.org.cn/whl/stable/noavx.html
 from paddleocr import PaddleOCR
 import pytesseract
 import cv2
@@ -171,7 +173,8 @@ def jpgsIntoList(dir_path):
 
 def run_tests(file_names):
     reader = easyocr.Reader(['en'])
-    ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=False, show_log=False)
+    ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=True, show_log=True)
+    # ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=False, show_log=False)
     start = time.time()
     print("Looping paddle")
     start = time.time()
