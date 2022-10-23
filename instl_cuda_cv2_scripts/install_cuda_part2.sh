@@ -6,6 +6,10 @@ CUDA_VERSION=11.8
 CUDNN_VERSION_RIGHT=8.6.0.163
 KEYRING_VERSION=1.0-1
 
+
+nvccs --version
+nvidia-smi
+
 cd ~/Downloads
 echo 'export PATH=/usr/local/cuda-'${CUDA_VERSION}'/bin${PATH:+:${PATH}}:~/bin' >> ~/.bashrc
 echo 'export LD_LIBRARY_PATH=/usr/local/cuda-'${CUDA_VERSION}'/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}' >> ~/.bashrc
