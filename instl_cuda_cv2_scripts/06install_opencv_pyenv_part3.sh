@@ -8,6 +8,8 @@ echo "make sure you found so file before continue otherwise symlink will lead to
 cd ${PREFIX}/lib/python3.9/site-packages/
 # use only one of those below, find the so file first
 ln -s $HOME/.pyenv/versions/3.9.15/usr/local/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so cv2.so
+# ln -s /home/railcar/.pyenv/versions/3.9.15/usr/local/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so
+
 # ln -s /usr/local/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so cv2.so
 # ln -s $PREFIX_MAIN/lib/python3.9/site-packages/cv2/python-3.9/cv2.cpython-39-x86_64-linux-gnu.so cv2.so
 
