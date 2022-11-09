@@ -174,8 +174,8 @@ def jpgsIntoList(dir_path):
 
 def run_tests(file_names):
     reader = easyocr.Reader(['en'])
-    ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=True, show_log=True)
-    # ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=False, show_log=False)
+    # ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=True, show_log=True)
+    ocr = PaddleOCR(use_angle_cls=True, lang='en', debug=False, show_log=False)
     start = time.time()
     print("Looping paddle")
     start = time.time()
