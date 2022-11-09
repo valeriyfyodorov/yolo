@@ -8,7 +8,7 @@
 # pip uninstall opencv-contrib-python-headless
 # pip3 install opencv-contrib-python==4.5.5.62
 # for no avx machines
-# python3 -m pip install paddlepaddle-gpu==2.3.2 -f https://paddlepaddle.org.cn/whl/stable/noavx.html
+# pip install paddlepaddle-gpu==2.3.2.post116 -f https://www.paddlepaddle.org.cn/whl/linux/mkl/avx/stable.html
 from paddleocr import PaddleOCR
 import pytesseract
 import cv2
