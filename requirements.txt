@@ -1,7 +1,6 @@
 autopep8
+awscli
 bandit
-colorama
-docutils
 easyocr
 flake8
 keras-ocr
@@ -11,7 +10,7 @@ onnxsim
 paddleocr
 paddlepaddle
 pip-chill
+pipdeptree
 pylint
 pytesseract
-s3transfer
 tensorflow

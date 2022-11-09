@@ -1,5 +1,5 @@
 #! /bin/bash
-# run with sudo
+# do not run with sudo otherwise wrong HOME will be used
 # IMPORTANT ACTIVATE VENV !!
 # pyenv activate YOURENVIRONMENT
 # instal CUDA before continue
