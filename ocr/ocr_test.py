@@ -1,5 +1,6 @@
 # import keras_ocr
 # pip install paddlepaddle -i https://mirror.baidu.com/pypi/simple
+# for Cuda after cuda 11 - link paddle from source
 # pip install "paddleocr>=2.0.1"
 # if errors in opencv loop
 # pip uninstall opencv-python
