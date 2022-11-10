@@ -16,7 +16,7 @@ UNFOUND_PLATE_STRING = "XXXXXXXX"  # default plate nr if problem detecting frame
 TIMES_CANDIDATES_REPEATED_TO_ACCEPT = 8
 # if only one number detected on image be specially sure
 SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
-CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.193:554/media/video1"
+CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.193:554/media/video2"
 # CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.194:554/media/video1"
 PAUSE_ON_ERROR_IN_STREAM = 10
 
