@@ -19,6 +19,7 @@ SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
 # CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.193:554/media/video1"
 CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.194:554/media/video2"
 PAUSE_ON_ERROR_IN_STREAM = 10
+NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 2000
 
 
 def generateStrinsList(count):
@@ -154,7 +155,7 @@ if __name__ == '__main__':
     # processFrame(frame, net, reader, pocr)
     video_file_name = "01.ts"
     video_strem_name = CAMERA_ADDRESS
-    for trial in range(1, 1000):
+    for trial in range(1, NUMBER_OF_TRIALS_TO_RESTORE_STREAM):
         processStream(video_strem_name, net, reader, pocr)
         print(
             f"Trial {trial}. No stream received, pausing for PAUSE_ON_ERROR_IN_STREAM: {PAUSE_ON_ERROR_IN_STREAM} seconds")
