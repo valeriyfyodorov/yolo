@@ -16,10 +16,10 @@ UNFOUND_PLATE_STRING = "XXXXXXXX"  # default plate nr if problem detecting frame
 TIMES_CANDIDATES_REPEATED_TO_ACCEPT = 8
 # if only one number detected on image be specially sure
 SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
-CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.193:554/media/video2"
-# CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.194:554/media/video1"
+CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.224:554/media/video1"
+CAMERA_NAME = "21 224"
 PAUSE_ON_ERROR_IN_STREAM = 10
-NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 2000
+NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 20000
 
 
 def generateStrinsList(count):
@@ -130,7 +130,7 @@ def processStream(file_name, net, reader, pocr):
                         print("===============================================")
                         try:
                             urlopen(  # nosec
-                                f'http://notscr.amgs.me/info/ocr.aspx?nr={latest_detection}', timeout=0.5)
+                                f'http://notscr.amgs.me/info/ocr.aspx?nr={latest_detection}&camera={CAMERA_NAME}', timeout=0.5)
                         except Exception as e:
                             print("Caannot open amgs, skipping")
                         skip_frames_remaning = SKIP_FRAMES_ONSUCCESS
