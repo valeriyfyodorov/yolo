@@ -60,7 +60,7 @@ def extract_tesser(image, file):
 
 
 def extract_easy(reader, image, file):
-    box = reader.readtext(image)
+    box = reader.readtext(image, allowlist='0123456789')
     res = ""
     if len(box) > 0:
         res = processText(box[0][1])
@@ -154,6 +154,7 @@ def processImage(image, resize=False):
         image = cv2.resize(image,
                            (new_width, new_height),
                            interpolation=cv2.INTER_CUBIC)
+    image = cv2.GaussianBlur(image, (5, 5), 0)
     # # try dilate / erode
     # kernel = np.ones((3, 3), np.uint8)
     # image = cv2.erode(image, kernel, iterations=1)
