@@ -10,18 +10,18 @@ from helpers.ocr import extract_result
 from urllib.request import urlopen
 
 CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
-SKIP_FRAMES_ONSUCCESS = 5  # 0-50 after found number skip relax for a few frames
-PROCESS_ONLY_EVERY_NTH_FRAME = 2  # skip every n-th frame when reading
+SKIP_FRAMES_ONSUCCESS = 25  # 0-50 after found number skip relax for a few frames
+PROCESS_ONLY_EVERY_NTH_FRAME = 4  # skip every n-th frame when reading
 UNFOUND_PLATE_STRING = "XXXXXXXX"  # default plate nr if problem detecting frame
 # accept ocr only same result received on so many frames (5-8) readings repeatedly
 TIMES_CANDIDATES_REPEATED_TO_ACCEPT = 3
+PAUSE_ON_ERROR_IN_STREAM = 2
+NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 200000
 # if only one number detected on image be specially sure
 SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
 CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.223:554/media/video1"
 # CAMERA_ADDRESS = "01.ts"
 CAMERA_NAME = "20(223)"
-PAUSE_ON_ERROR_IN_STREAM = 10
-NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 20000
 
 
 def generateStrinsList(count):
