@@ -8,6 +8,7 @@ from itertools import groupby
 from helpers.infer import pre_process, post_process
 from helpers.ocr import extract_result
 from urllib.request import urlopen
+from wurlitzer import pipes
 
 CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
 SKIP_FRAMES_ONSUCCESS = 25  # 0-50 after found number skip relax for a few frames
@@ -164,7 +165,8 @@ if __name__ == '__main__':
     video_file_name = "01.ts"
     video_strem_name = CAMERA_ADDRESS
     for trial in range(1, NUMBER_OF_TRIALS_TO_RESTORE_STREAM):
-        processStream(video_strem_name, net, None, pocr)
+        with pipes():
+            processStream(video_strem_name, net, None, pocr)
         print(
             f"Trial {trial}. No stream received, pausing for PAUSE_ON_ERROR_IN_STREAM: {PAUSE_ON_ERROR_IN_STREAM} seconds")
         time.sleep(PAUSE_ON_ERROR_IN_STREAM)
