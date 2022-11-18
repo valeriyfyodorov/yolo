@@ -10,14 +10,14 @@ from helpers.ocr import extract_result
 from urllib.request import urlopen
 from wurlitzer import pipes
 
-CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
-SKIP_FRAMES_ONSUCCESS = 25  # 0-50 after found number skip relax for a few frames
-PROCESS_ONLY_EVERY_NTH_FRAME = 4  # skip every n-th frame when reading
+# CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
+SKIP_FRAMES_ONSUCCESS = 12  # 0-50 after found number skip relax for a few frames
+PROCESS_ONLY_EVERY_NTH_FRAME = 2  # skip every n-th frame when reading
 UNFOUND_PLATE_STRING = "XXXXXXXX"  # default plate nr if problem detecting frame
 # accept ocr only same result received on so many frames (5-8) readings repeatedly
 TIMES_CANDIDATES_REPEATED_TO_ACCEPT = 3
-PAUSE_ON_ERROR_IN_STREAM = 2
-NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 200000
+PAUSE_ON_ERROR_IN_STREAM = 1
+NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 2000000
 # if only one number detected on image be specially sure
 SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
 CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.224:554/media/video1"
@@ -104,7 +104,7 @@ def processFrame(frame, net, reader, pocr):
 
 def processStream(file_name, net, reader, pocr):
     cap = cv2.VideoCapture(file_name)
-    cap.set(cv2.CAP_PROP_BUFFERSIZE, CAMERA_BUFFER_SIZE)
+    # cap.set(cv2.CAP_PROP_BUFFERSIZE, CAMERA_BUFFER_SIZE)
     if (cap.isOpened() == False):
         print("Error opening video stream or file")
     # Read until video is completed
