@@ -152,8 +152,6 @@ if __name__ == '__main__':
     pocr = PaddleOCR(use_angle_cls=True, lang='en',
                      debug=False, show_log=False)
     start = time.time()
-    # processFrame(frame, net, reader, pocr)
-    video_file_name = "01.ts"
     video_strem_name = CAMERA_ADDRESS
     for trial in range(1, NUMBER_OF_TRIALS_TO_RESTORE_STREAM):
         processStream(video_strem_name, net, reader, pocr)
