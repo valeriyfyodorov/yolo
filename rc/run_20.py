@@ -100,7 +100,7 @@ def processFrame(frame, net, reader, pocr):
 
 
 def processStream(file_name, net, reader, pocr):
-    cap = cv2.VideoCapture(file_name)
+    cap = cv2.VideoCapture(file_name, cv2.CAP_GSTREAMER)
     cap.set(cv2.CAP_PROP_BUFFERSIZE, CAMERA_BUFFER_SIZE)
     if (cap.isOpened() == False):
         print("Error opening video stream or file")
