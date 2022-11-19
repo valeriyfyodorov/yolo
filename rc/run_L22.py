@@ -9,7 +9,11 @@ from helpers.infer import pre_process, post_process
 from helpers.ocr import extract_result
 from urllib.request import urlopen
 from wurlitzer import pipes
+import logging
+from logging.handlers import RotatingFileHandler
 
+RAIL_WAY = "22"
+CAMERA_IP = "194"
 # CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
 SKIP_FRAMES_ONSUCCESS = 12  # 0-50 after found number skip relax for a few frames
 PROCESS_ONLY_EVERY_NTH_FRAME = 2  # skip every n-th frame when reading
@@ -20,9 +24,26 @@ PAUSE_ON_ERROR_IN_STREAM = 1
 NUMBER_OF_TRIALS_TO_RESTORE_STREAM = 2000000
 # if only one number detected on image be specially sure
 SINGLE_DETECT_CONFIDENCE_TO_PASS = 0.86
-CAMERA_ADDRESS = "rtsp://admin:AnafigA_123@192.168.20.194:554/media/video1"
-# CAMERA_ADDRESS = "01.ts"
-CAMERA_NAME = "22(194)"
+CAMERA_ADDRESS = f"rtsp://admin:AnafigA_123@192.168.20.{CAMERA_IP}:554/media/video1"
+CAMERA_NAME = f"{RAIL_WAY}({CAMERA_IP})"
+TEST_IMAGES_FOLDER = f"/home/railcar/Desktop/frames{RAIL_WAY}/"
+LOG_FILE = f"/home/railcar/Desktop/log{RAIL_WAY}.txt"
+IS_MACOS = False
+if IS_MACOS:
+    TEST_IMAGES_FOLDER = f"/Users/valera/Desktop/frames{RAIL_WAY}/"
+    LOG_FILE = f"/Users/valera/Desktop/log{RAIL_WAY}.txt"
+    CAMERA_ADDRESS = "01.ts"
+
+
+log_formatter = logging.Formatter(
+    '%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s')
+my_handler = RotatingFileHandler(LOG_FILE, mode='a', maxBytes=5*1024*1024,
+                                 backupCount=1, encoding=None, delay=0)
+my_handler.setFormatter(log_formatter)
+# my_handler.setLevel(logging.INFO)
+app_log = logging.getLogger('root')
+# app_log.setLevel(logging.INFO)
+app_log.addHandler(my_handler)
 
 
 def generateStrinsList(count):
@@ -113,6 +134,8 @@ def processStream(file_name, net, reader, pocr):
     # print("CANDIDATES", candidates)  # DEBUG
     skip_frames_remaning = 0
     frame_counter = 0
+    start = time.time()
+    allow_test_frame_capture = False
     while (cap.isOpened()):
         # Capture frame-by-frame
         ret, frame = cap.read()
@@ -125,6 +148,12 @@ def processStream(file_name, net, reader, pocr):
         if (frame_counter % PROCESS_ONLY_EVERY_NTH_FRAME) != 0:
             continue
         if ret == True:
+            if allow_test_frame_capture:
+                cv2.imwrite(
+                    f"{TEST_IMAGES_FOLDER}{time.time()}_post_recognized_{(time.time() - start):.6f}sec.jpg", frame)
+                print("Saving test image to frames folder")
+                allow_test_frame_capture = False
+            start = time.time()
             candidate = processFrame(frame, net, reader, pocr)
             if candidate != UNFOUND_PLATE_STRING:
                 candidates.insert(0, candidate)
@@ -137,11 +166,19 @@ def processStream(file_name, net, reader, pocr):
                         print(
                             f"====== Found good detection    {latest_detection}     - congrats  ===")
                         print("===============================================")
+                        app_log.info(
+                            f"detected {latest_detection}, {(time.time() - start):.6f} sec since frame read")
+                        allow_test_frame_capture = True
+                        cv2.imwrite(
+                            f"{TEST_IMAGES_FOLDER}{time.time()}_recognized_{(time.time() - start):.6f}sec.jpg", frame)
+                        start_api = time.time()
                         try:
                             urlopen(  # nosec
                                 f'http://notscr.amgs.me/info/ocr.aspx?nr={latest_detection}&camera={CAMERA_NAME}', timeout=0.5)
                         except Exception as e:
-                            print("Caannot open amgs, skipping")
+                            app_log.error(f"timeout couldnot reach ocr.aspx")
+                        app_log.info(
+                            f"recorded nr at api, took {(time.time() - start_api):.6f} seconds to access ocr.aspx")
                         skip_frames_remaning = SKIP_FRAMES_ONSUCCESS
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
@@ -165,8 +202,7 @@ if __name__ == '__main__':
     video_file_name = "01.ts"
     video_strem_name = CAMERA_ADDRESS
     for trial in range(1, NUMBER_OF_TRIALS_TO_RESTORE_STREAM):
-        with pipes():
-            processStream(video_strem_name, net, None, pocr)
+        processStream(video_strem_name, net, None, pocr)
         print(
             f"Trial {trial}. No stream received, pausing for PAUSE_ON_ERROR_IN_STREAM: {PAUSE_ON_ERROR_IN_STREAM} seconds")
         time.sleep(PAUSE_ON_ERROR_IN_STREAM)
