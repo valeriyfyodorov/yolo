@@ -158,6 +158,9 @@ def processStream(file_name, net, reader, pocr):
             start = time.time()
             candidate = processFrame(frame, net, reader, pocr)
             if candidate != UNFOUND_PLATE_STRING:
+                if candidate != latest_detection:
+                    app_log.info(
+                        f"candidate nr result after OCR: << {candidate} >>")
                 candidates.insert(0, candidate)
                 candidates.pop()
                 # print(candidates)  # DEBUG
