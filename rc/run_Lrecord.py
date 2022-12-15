@@ -12,8 +12,8 @@ from wurlitzer import pipes
 import logging
 from logging.handlers import RotatingFileHandler
 
-RAIL_WAY = "20"
-CAMERA_IP = "223"
+RAIL_WAY = "22"
+CAMERA_IP = "194"
 # CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
 SKIP_FRAMES_ONSUCCESS = 12  # 0-50 after found number skip relax for a few frames
 PROCESS_ONLY_EVERY_NTH_FRAME = 2  # skip every n-th frame when reading
@@ -28,7 +28,7 @@ CAMERA_ADDRESS = f"rtsp://admin:AnafigA_123@192.168.20.{CAMERA_IP}:554/media/vid
 CAMERA_NAME = f"{RAIL_WAY}({CAMERA_IP})"
 TEST_IMAGES_FOLDER = f"/home/railcar/Desktop/frames{RAIL_WAY}/"
 LOG_FILE = f"/home/railcar/Desktop/log{RAIL_WAY}.txt"
-IS_MACOS = False
+IS_MACOS = True
 if IS_MACOS:
     TEST_IMAGES_FOLDER = f"/Users/valera/Desktop/frames{RAIL_WAY}/"
     LOG_FILE = f"/Users/valera/Desktop/log{RAIL_WAY}.txt"
@@ -106,13 +106,13 @@ def processDetectionInImage(img, reader, pocr):
 
 def processFrame(frame, net, reader, pocr):
     frame = downsize_frame(frame)
-    cv2.imshow("Main stream 20", frame)
+    cv2.imshow("Main stream", frame)
     imgs = inferFrame(frame, net)
     results = []
     confids = []
     plate = UNFOUND_PLATE_STRING
     for img in imgs:
-        cv2.imshow("Detected frames 20", img)
+        cv2.imshow("Detected frames", img)
         found, conf = processDetectionInImage(img, reader, pocr)
         if found != "":
             results.append(found)

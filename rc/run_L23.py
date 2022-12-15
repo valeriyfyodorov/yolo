@@ -106,11 +106,13 @@ def processDetectionInImage(img, reader, pocr):
 
 def processFrame(frame, net, reader, pocr):
     frame = downsize_frame(frame)
+    cv2.imshow("Main stream 23", frame)
     imgs = inferFrame(frame, net)
     results = []
     confids = []
     plate = UNFOUND_PLATE_STRING
     for img in imgs:
+        cv2.imshow("Detected frames 23", img)
         found, conf = processDetectionInImage(img, reader, pocr)
         if found != "":
             results.append(found)
