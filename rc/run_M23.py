@@ -7,16 +7,18 @@ import re
 from itertools import groupby
 from helpers.infer import pre_process, post_process
 from helpers.ocr import extract_result
+from helpers.video_threading import VideoGet
 from urllib.request import urlopen
 from wurlitzer import pipes
 import logging
 from logging.handlers import RotatingFileHandler
 
-RAIL_WAY = "22"
-CAMERA_IP = "194"
+SHOW_LIVE_VIDEO_WINDOW = False
+RAIL_WAY = "23"
+CAMERA_IP = "193"
 # CAMERA_BUFFER_SIZE = 6  # buffrer frames to drop for webcam
 SKIP_FRAMES_ONSUCCESS = 12  # 0-50 after found number skip relax for a few frames
-PROCESS_ONLY_EVERY_NTH_FRAME = 2  # skip every n-th frame when reading
+PROCESS_ONLY_EVERY_NTH_FRAME = 1  # skip every n-th frame when reading
 UNFOUND_PLATE_STRING = "XXXXXXXX"  # default plate nr if problem detecting frame
 # accept ocr only same result received on so many frames (5-8) readings repeatedly
 TIMES_CANDIDATES_REPEATED_TO_ACCEPT = 3
@@ -28,11 +30,11 @@ CAMERA_ADDRESS = f"rtsp://admin:AnafigA_123@192.168.20.{CAMERA_IP}:554/media/vid
 CAMERA_NAME = f"{RAIL_WAY}({CAMERA_IP})"
 TEST_IMAGES_FOLDER = f"/home/railcar/Desktop/frames{RAIL_WAY}/"
 LOG_FILE = f"/home/railcar/Desktop/log{RAIL_WAY}.txt"
-IS_MACOS = True
+IS_MACOS = False
 if IS_MACOS:
     TEST_IMAGES_FOLDER = f"/Users/valera/Desktop/frames{RAIL_WAY}/"
     LOG_FILE = f"/Users/valera/Desktop/log{RAIL_WAY}.txt"
-    CAMERA_ADDRESS = "01.ts"
+    # CAMERA_ADDRESS = "01.ts"
 
 
 log_formatter = logging.Formatter(
@@ -106,13 +108,15 @@ def processDetectionInImage(img, reader, pocr):
 
 def processFrame(frame, net, reader, pocr):
     frame = downsize_frame(frame)
-    cv2.imshow("Main stream", frame)
+    if (SHOW_LIVE_VIDEO_WINDOW and frame.shape[0] > 2 and frame.shape[1] > 2):
+        cv2.imshow("Main stream 23", frame)
     imgs = inferFrame(frame, net)
     results = []
     confids = []
     plate = UNFOUND_PLATE_STRING
     for img in imgs:
-        cv2.imshow("Detected frames", img)
+        if (SHOW_LIVE_VIDEO_WINDOW and img.shape[0] > 2 and img.shape[1] > 2):
+            cv2.imshow("Detected frames 23", img)
         found, conf = processDetectionInImage(img, reader, pocr)
         if found != "":
             results.append(found)
@@ -126,11 +130,10 @@ def processFrame(frame, net, reader, pocr):
 
 
 def processStream(file_name, net, reader, pocr):
-    cap = cv2.VideoCapture(file_name)
-    # cap.set(cv2.CAP_PROP_BUFFERSIZE, CAMERA_BUFFER_SIZE)
-    if (cap.isOpened() == False):
-        print("Error opening video stream or file")
-    # Read until video is completed
+    video_getter = VideoGet(file_name).start()
+    if (video_getter.stream.isOpened() == False):
+        print("Error opening video stream")
+        video_getter.stop()
     latest_detection = UNFOUND_PLATE_STRING
     candidates = generateStrinsList(TIMES_CANDIDATES_REPEATED_TO_ACCEPT)
     # print("CANDIDATES", candidates)  # DEBUG
@@ -138,9 +141,9 @@ def processStream(file_name, net, reader, pocr):
     frame_counter = 0
     start = time.time()
     allow_test_frame_capture = False
-    while (cap.isOpened()):
-        # Capture frame-by-frame
-        ret, frame = cap.read()
+    while video_getter.stream.isOpened():
+        frame = video_getter.frame
+        ret = video_getter.grabbed
         frame_counter += 1
         if frame_counter > 100:
             frame_counter = 1
@@ -191,7 +194,7 @@ def processStream(file_name, net, reader, pocr):
         else:
             break
     # When everything done, release the video capture object
-    cap.release()
+    video_getter.stop()
     # Closes all the frames
     cv2.destroyAllWindows()
 
