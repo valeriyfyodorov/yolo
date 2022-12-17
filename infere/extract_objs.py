@@ -240,6 +240,8 @@ if __name__ == '__main__':
     # classesFile = "coco.names"
     classes = ["plate", ]
     net = cv2.dnn.readNet('../models/best_simp.onnx')
+    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
     # Load image.
     # to get onnx model from pt run from yolov5 venv first convertion command
     # python export.py --weights 'imported/best.pt' --include onnx --data 'imported/data.yaml'

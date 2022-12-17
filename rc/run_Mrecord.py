@@ -210,6 +210,8 @@ def processStream(file_name, net, reader, pocr):
 if __name__ == '__main__':
     frame = cv2.imread('test.jpg')
     net = cv2.dnn.readNet('../models/best_simp.onnx')
+    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
+    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
     # reader = easyocr.Reader(['en'])
     pocr = PaddleOCR(use_angle_cls=True, lang='en',
                      debug=False, show_log=False)
