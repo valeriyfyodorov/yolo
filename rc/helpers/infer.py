@@ -8,7 +8,7 @@ INPUT_HEIGHT = 640
 SCORE_THRESHOLD = 0.5
 NMS_THRESHOLD = 0.45
 # change this for main confidence
-CONFIDENCE_THRESHOLD = 0.3
+CONFIDENCE_THRESHOLD = 0.1
 
 
 def format_img_for_yolov5(source):

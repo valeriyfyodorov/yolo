@@ -9,7 +9,7 @@ INPUT_HEIGHT = 640
 SCORE_THRESHOLD = 0.5
 NMS_THRESHOLD = 0.45
 # change this for main confidence
-CONFIDENCE_THRESHOLD = 0.3
+CONFIDENCE_THRESHOLD = 0.001
 
 # Text parameters.
 FONT_FACE = cv2.FONT_HERSHEY_SIMPLEX
@@ -102,12 +102,23 @@ def post_process_and_save(input_image, outputs, file_name_no_ex="01", extn=".jpg
      # Perform non maximum suppression to eliminate redundant, overlapping boxes with lower confidences.
     indices = cv2.dnn.NMSBoxes(
         boxes, confidences, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
-    for idx, i in enumerate(indices):
-        box = boxes[i]
+    if len(indices) > 0:
+        max_confidence = max(confidences)
+        max_index = confidences.index(max_confidence)
+        box = boxes[max_index]
         left = box[0]
         top = box[1]
         width = box[2]
         height = box[3]
+        # Draw bounding box.
+        output_img = input_image.copy()
+        cv2.rectangle(output_img, (left, top),
+                      (left + width, top + height), BLUE, 3*THICKNESS)
+        # Class label.
+        label = "{}:{:.2f}".format(
+            classes[class_ids[max_index]], confidences[max_index])
+        # Draw label.
+        draw_label(output_img, label, left, top)
         cropped_top = int(top-height/32)
         cropped_bottom = int(top+height+height/32)
         cropped_left = int(left-width/32)
@@ -115,8 +126,24 @@ def post_process_and_save(input_image, outputs, file_name_no_ex="01", extn=".jpg
         crop_img = input_image[cropped_top:cropped_bottom,
                                cropped_left:cropped_right]
         if crop_img.shape[0] > 5 and crop_img.shape[1] > 20:
-            save_cropped_image(crop_img, file_name_no_ex + f"{idx:02d}" + extn)
+            save_cropped_image(crop_img, file_name_no_ex +
+                               f"{max_confidence:05f}" + extn)
             return crop_img
+    # for idx, i in enumerate(indices):
+    #     box = boxes[i]
+    #     left = box[0]
+    #     top = box[1]
+    #     width = box[2]
+    #     height = box[3]
+    #     cropped_top = int(top-height/32)
+    #     cropped_bottom = int(top+height+height/32)
+    #     cropped_left = int(left-width/32)
+    #     cropped_right = int(left+width+width/32)
+    #     crop_img = input_image[cropped_top:cropped_bottom,
+    #                            cropped_left:cropped_right]
+    #     if crop_img.shape[0] > 5 and crop_img.shape[1] > 20:
+    #         save_cropped_image(crop_img, file_name_no_ex + f"{idx:02d}" + extn)
+    #         return crop_img
     return input_image
 
 
@@ -137,6 +164,7 @@ def post_process(input_image, outputs):
     for r in range(rows):
         row = outputs[0][0][r]
         confidence = row[4]
+        # print("Confidence:", confidence)
         # Discard bad detections and continue.
         if confidence >= CONFIDENCE_THRESHOLD:
             classes_scores = row[5:]
@@ -156,8 +184,11 @@ def post_process(input_image, outputs):
      # Perform non maximum suppression to eliminate redundant, overlapping boxes with lower confidences.
     indices = cv2.dnn.NMSBoxes(
         boxes, confidences, CONFIDENCE_THRESHOLD, NMS_THRESHOLD)
-    for idx, i in enumerate(indices):
-        box = boxes[i]
+    # print("Total indices: ", len(indices))
+    if len(indices) > 0:
+        max_confidence = max(confidences)
+        max_index = confidences.index(max_confidence)
+        box = boxes[max_index]
         left = box[0]
         top = box[1]
         width = box[2]
@@ -166,16 +197,37 @@ def post_process(input_image, outputs):
         cv2.rectangle(output_img, (left, top),
                       (left + width, top + height), BLUE, 3*THICKNESS)
         # Class label.
-        label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
+        label = "{}:{:.2f}".format(
+            classes[class_ids[max_index]], confidences[max_index])
         # Draw label.
         draw_label(output_img, label, left, top)
         cropped_top = int(top-height/32)
         cropped_bottom = int(top+height+height/32)
         cropped_left = int(left-width/32)
         cropped_right = int(left+width+width/32)
-        save_cropped_image(input_image[cropped_top:cropped_bottom,
-                                       cropped_left:cropped_right], f"{idx:05d}.jpg")
-
+        crop_img = input_image[cropped_top:cropped_bottom,
+                               cropped_left:cropped_right]
+        if crop_img.shape[0] > 5 and crop_img.shape[1] > 20:
+            save_cropped_image(crop_img, f"{max_confidence:05f}.jpg")
+    # for idx, i in enumerate(indices):
+    #     box = boxes[i]
+    #     left = box[0]
+    #     top = box[1]
+    #     width = box[2]
+    #     height = box[3]
+    #     # Draw bounding box.
+    #     cv2.rectangle(output_img, (left, top),
+    #                   (left + width, top + height), BLUE, 3*THICKNESS)
+    #     # Class label.
+    #     label = "{}:{:.2f}".format(classes[class_ids[i]], confidences[i])
+    #     # Draw label.
+    #     draw_label(output_img, label, left, top)
+    #     cropped_top = int(top-height/32)
+    #     cropped_bottom = int(top+height+height/32)
+    #     cropped_left = int(left-width/32)
+    #     cropped_right = int(left+width+width/32)
+    #     save_cropped_image(input_image[cropped_top:cropped_bottom,
+    #                                    cropped_left:cropped_right], f"{idx:05d}.jpg")
     return output_img
 
 
@@ -184,6 +236,7 @@ def detectAndShowImage(file_name, net):
     start = time.time()
     detections = pre_process(frame, net)
     t, _ = net.getPerfProfile()
+    # print(detections)
     img = post_process(frame.copy(), detections)
     label = 'Inference time: %.2f ms' % (t * 1000.0 / cv2.getTickFrequency())
     print(label)
@@ -248,5 +301,5 @@ if __name__ == '__main__':
     # net = cv2.dnn.readNet('../models/best.onnx')
     # simplify model if error on import of the original
     # Process image.
-    # detectAndShowImage('test.jpg', net)
-    detectAndSaveStream('03.mp4', net)
+    # detectAndShowImage('test.png', net)
+    detectAndSaveStream('01.ts', net)
