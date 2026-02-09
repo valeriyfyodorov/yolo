@@ -1,0 +1,15 @@
+[project]
+name = "yolo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "opencv-python>=4.13.0.92",
+    "paddlepaddle>=3.3.0",
+]
+
+[project.optional-dependencies]
+all = [
+    "paddleocr>=3.4.0",
+]

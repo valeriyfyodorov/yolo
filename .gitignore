@@ -16,3 +16,7 @@ infere/frames/*
 infere/*.png
 ocr/frames/*
 packages.microsoft.gpg
+venv/
+.venv/
+.env*
+test_frames/
