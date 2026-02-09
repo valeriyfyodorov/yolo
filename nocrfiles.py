@@ -7,16 +7,18 @@ import os
 os.environ["PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK"] = "True"
 
 
-def has_numbers_in_text(text):
+def number_in_text(text):
     # result = re.findall(r'\b\d{3,10}\b', text)
     text = text.upper().replace(" ", "").replace(
         "-", "").replace(".", "").replace(",", "").replace(
             ":", "").replace("[", "").replace("]", "")
     text = text.replace("O", "0").replace(
-        "I", "1").replace("Z", "2").replace("S", "5").replace("B", "8")
+        "I", "1").replace("Z", "2").replace("S", "5").replace("B", "8").replace("G", "9").replace("L", "1")
     result = re.match(r'\b\d{4,10}\b', text)
     if result:
         # print(result, text)
+        if len(text) > 8:
+            text = text[:8]
         return True, text
     return False, text
 
@@ -52,7 +54,7 @@ def run_ocr():
                 continue
             # print(res['rec_texts'])
             for item in res['rec_texts']:
-                has_num, txt = has_numbers_in_text(item)
+                has_num, txt = number_in_text(item)
                 if has_num:
                     print(txt)
             # res.print()
@@ -63,4 +65,4 @@ def run_ocr():
 
 
 run_ocr()
-# has_numbers_in_text("99439945")
+# number_in_text("99439945")
