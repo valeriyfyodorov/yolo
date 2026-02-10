@@ -1,6 +1,6 @@
 from ultralytics import YOLO
 
-model = YOLO("yolov8/best.pt")
+model = YOLO("mod26/ds2_yv8s_640/best.pt")
 
 # results = model(source=0, show=True, conf=0.25, save=True)  # webcam
 # results = model(source="path/to/image.jpg", show=True,
@@ -20,8 +20,8 @@ model = YOLO("yolov8/best.pt")
 # results = model(source="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 #                 show=True, conf=0.25, save=True)  # YouTube video URL
 
-results = model(source="sample_cars/05.jpg", show=True,
-                conf=0.2, save=True)  # static image
+results = model(source="sample_cars/09.jpg", show=True,
+                conf=0.1, save=True)  # static image
 
 print("Bounding boxes of all detected objects in xyxy format:")
 print("Bounding boxes of all detected objects in xywh format:")

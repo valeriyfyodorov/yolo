@@ -4,6 +4,29 @@ import cv2
 import socket
 
 
+def good_image(image):
+    hist = cv2.calcHist([image], [1], None, [4], [0, 256])
+    if hist[1][0] == 0 or hist[2][0] == 0:
+        return False
+    lows = (hist[0][0] / hist[1][0] * 100)
+    highs = (hist[3][0] / hist[2][0] * 100)
+    if lows < 0.5 and highs < 0.5:
+        return False
+    return True
+
+
+def crop_image(image, x_percent, y_percent, width_percent, height_percent):
+    x = int(image.shape[1] * x_percent)
+    y = int(image.shape[0] * y_percent)
+    w = int(image.shape[1] * width_percent)
+    h = int(image.shape[0] * height_percent)
+    # # show for a second
+    # cv2.imshow("cropped", image[y:y+h, x:x+w])
+    # cv2.waitKey(3000)
+    # cv2.destroyAllWindows()
+    return image[y:y+h, x:x+w]
+
+
 def isAlive(address):
     try:
         # connect to the host -- tells us if the host is actually
@@ -74,6 +97,9 @@ for key, value in cams.items():
             #     print(f"skipped {i}")
             #     continue
             if ret and frame.any():
+                if not good_image(frame):
+                    print(f"skipped {i}")
+                    continue
                 cv2.imwrite(f"test_frames/{key}_frame{i:03d}.jpg", frame)
                 # cv2.imshow('VIDEO', frame)
             else:
