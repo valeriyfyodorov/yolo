@@ -28,18 +28,31 @@ def isAlive(address):
 
 rtsp_template = "rtsp://railcar:AnafigA123_@{ip}:554/unicast/c{channel}/s{stream}/live"
 cams = {}
-cams["cam1"] = {
+cams["20a"] = {
     "ip": "192.168.120.14",
     "channel": "1", }
-cams["cam2"] = {
+cams["20b"] = {
     "ip": "192.168.120.14",
     "channel": "2", }
-cams["cam3"] = {
+cams["21a"] = {
     "ip": "192.168.120.14",
     "channel": "3", }
-cams["cam4"] = {
+cams["21b"] = {
     "ip": "192.168.120.14",
     "channel": "4", }
+cams["22a"] = {
+    "ip": "192.168.120.14",
+    "channel": "5", }
+cams["22b"] = {
+    "ip": "192.168.120.14",
+    "channel": "6", }
+cams["23a"] = {
+    "ip": "192.168.120.14",
+    "channel": "7", }
+cams["23b"] = {
+    "ip": "192.168.120.14",
+    "channel": "8", }
+
 stream = 1
 
 
@@ -55,7 +68,7 @@ for key, value in cams.items():
         continue
     cap = cv2.VideoCapture(url)
     if cap.isOpened():
-        for i in range(10):
+        for i in range(4):
             ret, frame = cap.read()
             # if i < 3:
             #     print(f"skipped {i}")

@@ -20,8 +20,8 @@ model = YOLO("yolov8/best.pt")
 # results = model(source="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 #                 show=True, conf=0.25, save=True)  # YouTube video URL
 
-results = model(source="test_frames/cam1_frame002.jpg", show=True,
-                conf=0.25, save=True)  # static image
+results = model(source="sample_cars/05.jpg", show=True,
+                conf=0.2, save=True)  # static image
 
 print("Bounding boxes of all detected objects in xyxy format:")
 print("Bounding boxes of all detected objects in xywh format:")
