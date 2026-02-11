@@ -21,18 +21,21 @@ def good_image(image):
 
 
 def crop_image(image, x_percent, y_percent, width_percent, height_percent):
+    # print(image.shape)
     x = int(image.shape[1] * x_percent)
     y = int(image.shape[0] * y_percent)
     w = int(image.shape[1] * width_percent)
     h = int(image.shape[0] * height_percent)
-    # # show for a second
-    # cv2.imshow("cropped", image[y:y+h, x:x+w])
-    # cv2.waitKey(3000)
-    # cv2.destroyAllWindows()
+    # show for a second
+    cv2.imshow("cropped", image[y:y+h, x:x+w])
+    cv2.waitKey(5000)
+    cv2.destroyAllWindows()
     return image[y:y+h, x:x+w]
 
 
 # check_if_good_image(cv2.imread("sample_cars/grey.jpg"))
-# crop_image(cv2.imread("sample_cars/05.jpg"), 0.25, 0.25, 0.5, 0.5)
-print(good_image(cv2.imread("sample_cars/grey2.jpg")))
+cropped = crop_image(cv2.imread(
+    "sample_cars/for_crop/23sc4_01.jpeg"), 0.09, 0.43, 0.22, 0.15)
+# cv2.imwrite("sample_cars/cropped.jpg", cropped)
+# print(good_image(cv2.imread("sample_cars/grey2.jpg")))
 # good_image(cv2.imread("sample_cars/05.jpg"))

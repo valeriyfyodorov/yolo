@@ -51,30 +51,80 @@ def isAlive(address):
 
 rtsp_template = "rtsp://railcar:AnafigA123_@{ip}:554/unicast/c{channel}/s{stream}/live"
 cams = {}
-cams["20a"] = {
+cams["20sc1"] = {
     "ip": "192.168.120.14",
-    "channel": "1", }
-cams["20b"] = {
+    "channel": "1",
+    "crop": {
+        "x": 0.125,
+        "y": 0.614,
+        "width":  0.24,
+        "height": 0.13,
+    },
+}
+cams["20sc2"] = {
     "ip": "192.168.120.14",
-    "channel": "2", }
-cams["21a"] = {
+    "channel": "2",
+    "crop": {
+        "x": 0.32,
+        "y": 0.46,
+        "width": 0.29,
+        "height": 0.16,
+    },
+}
+cams["21sc1"] = {
     "ip": "192.168.120.14",
-    "channel": "3", }
-cams["21b"] = {
+    "channel": "3",
+    "crop": {
+        "x": 0.03,
+        "y": 0.58,
+        "width": 0.24,
+        "height": 0.2,
+    }, }
+cams["21sc2"] = {
     "ip": "192.168.120.14",
-    "channel": "4", }
-cams["22a"] = {
+    "channel": "4",
+    "crop": {
+        "x": 0.05,
+        "y": 0.63,
+        "width": 0.28,
+        "height": 0.27,
+    }, }
+cams["22sc3"] = {
     "ip": "192.168.120.14",
-    "channel": "5", }
-cams["22b"] = {
+    "channel": "6",
+    "crop": {
+        "x": 0.09,
+        "y": 0.39,
+        "width": 0.45,
+        "height": 0.22,
+    }, }
+cams["22sc4"] = {
     "ip": "192.168.120.14",
-    "channel": "6", }
-cams["23a"] = {
+    "channel": "6",
+    "crop": {
+        "x": 0.13,
+        "y":  0.57,
+        "width": 0.35,
+        "height": 0.23,
+    }, }
+cams["23sc3"] = {
     "ip": "192.168.120.14",
-    "channel": "7", }
-cams["23b"] = {
+    "channel": "7",
+    "crop": {
+        "x": 0.14,
+        "y": 0.46,
+        "width": 0.37,
+        "height": 0.16,
+    }, }
+cams["23sc4"] = {
     "ip": "192.168.120.14",
-    "channel": "8", }
+    "channel": "8",
+    "crop": {
+        "x": 0.09,
+        "y": 0.43,
+        "width": 0.22,
+        "height": 0.15,
+    }, }
 
 stream = 1
 
