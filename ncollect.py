@@ -4,8 +4,12 @@ import cv2
 import time
 import re
 from os import listdir, environ
-# import os
-# os.environ["PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK"] = "True"
+import json
+from urllib.request import urlopen
+
+# Open the URL that contains JSON
+
+URL_API = "https://amgs.me/apijson.ashx?key=gd3784h67hxgugb&command=railcarinfo&nr="
 
 rtsp_template = "rtsp://railcar:AnafigA123_@{ip}:554/unicast/c{channel}/s{stream}/live"
 stream = 1
@@ -203,8 +207,14 @@ def txt_from_cam(ocr, cam, stream):
 
 def info_and_confidence_from_api(nr):
     result = {"nr": "", "info": "?", "confidence": 0}
-    result["nr"] = nr
-    result["confidence"] = 1
+    response = urlopen(URL_API + nr, timeout=5)
+    if response.getcode() == 200:
+        data = json.loads(response.read().decode('utf-8'))
+        # print("data", data)
+        result = data
+    else:
+        print('Error fetching data')
+    # print("result", result)
     return result
 
 
@@ -224,6 +234,7 @@ def rway_best_result(ocr, rway_cams_pair, stream):
 
 
 def loop_all_rways_cams(ocr, cams, stream):
+    start = time.time()
     rways_cams = {
         "20": {"cams": [cams["20sc1"], cams["20sc2"]]},
         "21": {"cams": [cams["21sc1"], cams["21sc2"]]},
@@ -235,11 +246,14 @@ def loop_all_rways_cams(ocr, cams, stream):
         # print("key", key, "value", value)
         result[key] = rway_best_result(
             ocr, value["cams"], stream)
+    elapsed = time.time() - start
+    print("[INFO] OCR took {:.6f} seconds".format(elapsed))
     return result
 
 
 ocr = initiate_models()
 # print(txt_from_cam(ocr, cams["21sc1"], 1))
-print(loop_all_rways_cams(ocr, cams, stream))
 # run_ocr(ocr)
 # number_in_text("99439945")
+# info_and_confidence_from_api("91105")
+print(loop_all_rways_cams(ocr, cams, stream))
