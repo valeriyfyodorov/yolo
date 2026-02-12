@@ -1,5 +1,6 @@
 import cv2
 # print(cv2.__version__)
+import numpy as np
 
 
 def image_hystogram(image):
@@ -33,9 +34,22 @@ def crop_image(image, x_percent, y_percent, width_percent, height_percent):
     return image[y:y+h, x:x+w]
 
 
+def contrast_image(image, brightness=-60, contrast=1.25):
+    # Adjust the brightness and contrast
+    # Adjusts the brightness by adding 10 to each pixel value
+    image2 = cv2.addWeighted(image, contrast, np.zeros(
+        image.shape, image.dtype), 0, brightness)
+    # show for a second
+    cv2.imshow("cropped", image2)
+    cv2.waitKey(5000)
+    cv2.destroyAllWindows()
+    return image2
+
+
 # check_if_good_image(cv2.imread("sample_cars/grey.jpg"))
-cropped = crop_image(cv2.imread(
-    "sample_cars/for_crop/23sc4_01.jpeg"), 0.09, 0.43, 0.22, 0.15)
+# cropped = crop_image(cv2.imread(
+#     "sample_cars/for_crop/23sc4_01.jpeg"), 0.09, 0.43, 0.22, 0.15)
 # cv2.imwrite("sample_cars/cropped.jpg", cropped)
 # print(good_image(cv2.imread("sample_cars/grey2.jpg")))
 # good_image(cv2.imread("sample_cars/05.jpg"))
+contrasted = contrast_image(cv2.imread("sample_cars/for_contrast/02.jpg"))
